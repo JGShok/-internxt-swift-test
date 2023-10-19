@@ -14,20 +14,11 @@ struct PhotoGalleryView: View {
     @Environment(\.displayScale) private var displayScale
     
     private static let itemSpacing = 1.0
-    private static let itemCornerRadius = 1.0
     private static let itemSize = CGSize(width: 75, height: 75)
     
     private var imageSize: CGSize {
         return CGSize(width: Self.itemSize.width * min(displayScale, 2), height: Self.itemSize.height * min(displayScale, 2))
     }
-    
-    private let columns = [
-        GridItem(.adaptive(minimum: itemSize.width, maximum: itemSize.height), spacing: itemSpacing),
-        GridItem(.adaptive(minimum: itemSize.width, maximum: itemSize.height), spacing: itemSpacing),
-        GridItem(.adaptive(minimum: itemSize.width, maximum: itemSize.height), spacing: itemSpacing),
-        GridItem(.adaptive(minimum: itemSize.width, maximum: itemSize.height), spacing: itemSpacing),
-        GridItem(.adaptive(minimum: itemSize.width, maximum: itemSize.height), spacing: itemSpacing),
-    ]
     
     var body: some View {
         NavigationView {
@@ -44,14 +35,14 @@ struct PhotoGalleryView: View {
                 .labelStyle(VerticalLabelStyle())
             } else {
                 ScrollView(showsIndicators: false) {
-                    LazyVGrid(columns: columns, spacing: Self.itemSpacing) {
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 5), spacing: Self.itemSpacing) {
                         ForEach(photoCollection.photoAssets) { asset in
                             photoItemView(asset: asset)
                         }
                     }
                     .padding([.vertical], Self.itemSpacing)
                 }
-                .navigationTitle("Photos")
+                .navigationTitle("Gallery Assets")
             }
         }
     }
@@ -60,7 +51,7 @@ struct PhotoGalleryView: View {
         PhotoItemView(asset: asset, cache: photoCollection.cache, imageSize: imageSize)
             .frame(width: Self.itemSize.width, height: Self.itemSize.height)
             .clipped()
-            .cornerRadius(Self.itemCornerRadius)
+            .cornerRadius(1.0)
             .overlay(alignment: .bottomLeading) {
                 if asset.mediaType == .video {
                     Image(systemName: "video")
