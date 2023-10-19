@@ -23,10 +23,6 @@ struct PhotoAsset: Identifiable {
     var mediaType: MediaType {
         phAsset?.mediaType ?? .unknown
     }
-    
-    var accessibilityLabel: String {
-        "Photo\(isFavorite ? ", Favorite" : "")"
-    }
 
     init(phAsset: PHAsset, index: Int?) {
         self.phAsset = phAsset
@@ -38,32 +34,6 @@ struct PhotoAsset: Identifiable {
         self.identifier = identifier
         let fetchedAssets = PHAsset.fetchAssets(withLocalIdentifiers: [identifier], options: nil)
         self.phAsset = fetchedAssets.firstObject
-    }
-    
-    func setIsFavorite(_ isFavorite: Bool) async {
-        guard let phAsset = phAsset else { return }
-        Task {
-            do {
-                try await PHPhotoLibrary.shared().performChanges {
-                    let request = PHAssetChangeRequest(for: phAsset)
-                    request.isFavorite = isFavorite
-                }
-            } catch (let error) {
-                logger.error("Failed to change isFavorite: \(error.localizedDescription)")
-            }
-        }
-    }
-    
-    func delete() async {
-        guard let phAsset = phAsset else { return }
-        do {
-            try await PHPhotoLibrary.shared().performChanges {
-                PHAssetChangeRequest.deleteAssets([phAsset] as NSArray)
-            }
-            logger.debug("PhotoAsset asset deleted: \(index ?? -1)")
-        } catch (let error) {
-            logger.error("Failed to delete photo: \(error.localizedDescription)")
-        }
     }
 }
 
