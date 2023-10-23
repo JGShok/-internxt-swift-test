@@ -37,7 +37,9 @@ struct PhotoGalleryView: View {
                 ScrollView(showsIndicators: false) {
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 5), spacing: Self.itemSpacing) {
                         ForEach(photoCollection.photoAssets) { asset in
-                            photoItemView(asset: asset)
+                            autoreleasepool {
+                                photoItemView(asset: asset)
+                            }
                         }
                     }
                     .padding([.vertical], Self.itemSpacing)

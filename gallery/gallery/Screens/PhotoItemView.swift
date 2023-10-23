@@ -38,5 +38,8 @@ struct PhotoItemView: View {
                 }
             }
         }
+        .onDisappear{
+            image = nil
+        }
     }
 }

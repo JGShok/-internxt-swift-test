@@ -27,6 +27,8 @@ actor CachedImageManager {
     private lazy var requestOptions: PHImageRequestOptions = {
         let options = PHImageRequestOptions()
         options.deliveryMode = .opportunistic
+        options.resizeMode = .fast
+        options.isSynchronous = true
         return options
     }()
     
@@ -45,7 +47,7 @@ actor CachedImageManager {
         }
         imageManager.startCachingImages(for: phAssets, targetSize: targetSize, contentMode: imageContentMode, options: requestOptions)
     }
-
+    
     func stopCaching(for assets: [PhotoAsset], targetSize: CGSize) {
         let phAssets = assets.compactMap { $0.phAsset }
         phAssets.forEach {
